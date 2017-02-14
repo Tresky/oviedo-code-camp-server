@@ -28,6 +28,7 @@ post '/send_email' do
 
   if response['success']
     res = Mailer.send 'hello@tylerpetresky.com', params['name'] + ' <' + params['email'] + '>', '[Oviedo Code Camp] Contact Form', params['message']
+    content_type :json
     if res
       { :message => 'success' }.to_json
     else

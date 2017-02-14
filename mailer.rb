@@ -15,7 +15,6 @@ class Mailer
         :authentication       => :plain,
         :domain               => 'heroku.com'
       })
-    content_type :json
     res
   end
 end
