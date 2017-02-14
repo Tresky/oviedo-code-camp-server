@@ -12,18 +12,12 @@ post '/send_email' do
   puts 'Endpoint Hit'
   puts 'Verifying ReCaptcha'
   puts 'Body'
-  body = {
-    :secret => '6LdZXBUUAAAAAIDdtkCWTDS2Ca7RgkcizUgUYq6U',
-    :response => params['g-recaptcha-response']
-  }.to_json
+  body = 'secret=6LdZXBUUAAAAAIDdtkCWTDS2Ca7RgkcizUgUYq6U&response=' + params['g-recaptcha-response']
   puts body
   response = HTTParty.post('https://www.google.com/recaptcha/api/siteverify',
-    :body => {
-      :secret => '6LdZXBUUAAAAAIDdtkCWTDS2Ca7RgkcizUgUYq6U',
-      :response => params['g-recaptcha-response']
-    }.to_json,
+    :body => body,
     :headers => {
-      'Content-Type' => 'text/json'
+      'Content-Type' => 'application/x-www-form-urlencoded;charset=utf-8'
     })
 
   puts 'ReCaptcha Result'
