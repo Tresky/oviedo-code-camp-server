@@ -1,3 +1,5 @@
+require './helpers'
+
 before do
   content_type :json
   headers 'Access-Control-Allow-Origin' => '*',
@@ -12,7 +14,7 @@ post '/send_email' do
   puts 'Endpoint Hit'
   puts 'Verifying ReCaptcha'
   puts 'Body'
-  body = 'secret=6LdZXBUUAAAAAIDdtkCWTDS2Ca7RgkcizUgUYq6U&response=' + params['g-recaptcha-response']
+  body = 'secret=' + ENV['RECAPTCHA_SECRETE_KEY'] + '&response=' + params['g-recaptcha-response']
   puts body
   response = HTTParty.post('https://www.google.com/recaptcha/api/siteverify',
     :body => body,
@@ -24,22 +26,7 @@ post '/send_email' do
   puts response
 
   if response['success']
-    res = Pony.mail(
-      :from => params[:name] + "<" + params[:email] + ">",
-      :to => 'hello@tylerpetresky.com',
-      :subject => "[OVIEDO CODE CAMP] Contact Form",# + params[:subject],
-      :body => params[:message],
-      :via => :smtp,
-      :via_options => {
-        :address              => 'smtp.sendgrid.net',
-        :port                 => '587',
-        :enable_starttls_auto => true,
-        :user_name            => ENV['SENDGRID_USERNAME'],
-        :password             => ENV['SENDGRID_PASSWORD'],
-        :authentication       => :plain,
-        :domain               => 'heroku.com'
-      })
-    content_type :json
+    res = Mailer.send 'hello@tylerpetresky.com', params['name'] + ' <' + params['email'] + '>', '[Oviedo Code Camp] Contact Form', params['message']
     if res
       { :message => 'success' }.to_json
     else
@@ -48,6 +35,68 @@ post '/send_email' do
   else
     puts response
     { :message => 'failure_captcha' }.to_json
+  end
+end
+
+post '/signup' do
+  puts 'Signup Endpoint'
+  @amount = 35000
+
+  valid_params = Helpers.pull_params params, [
+    'parent_name',
+    'child_name',
+    'child_age',
+    'email',
+    'tshirt_size',
+    'stripeToken'
+  ]
+
+  if valid_params
+    # Create a token to test with in development
+    if ENV['RACK_ENV'].eql?('development')
+      begin
+        params[:stripeToken] = Stripe::Token.create(
+          :card => {
+            :number => "4242424242424242",
+            :exp_month => 2,
+            :exp_year => 2018,
+            :cvc => "314"
+          }
+        ).id
+      rescue Stripe::StripeError => e
+        return { :message => 'failure_creatingtesttoken', :error => e }.to_json
+      end
+    end
+
+    begin
+      puts 'Email: ' + params[:email]
+      puts 'Stripe: ' + params[:stripeToken]
+      @customer = Stripe::Customer.create(
+        :email => params[:email].to_s,
+        :source => params[:stripeToken].to_s
+      )
+
+      puts 'Customer: ' + @customer.id
+    rescue Stripe::StripeError => e
+      return { :message => 'failure_creatingcustomer', :error => e }.to_json
+    end
+
+    begin
+      @charge = Stripe::Charge.create(
+        :amount => @amount,
+        :description => params[:parent_name] + ' registered ' + params[:child_name] + ': ' + params[:child_age] + 'yo',
+        :currency => 'usd',
+        :customer => @customer.id
+      )
+
+      puts 'Charge: ' + @charge.id
+    rescue Stripe::StripeError => e
+      return { :message => 'failure_creatingcharge', :error => e }.to_json
+    end
+
+    {:message => 'success' }.to_json
+  else
+    { :message => 'failure_missingparams' }.to_json
   end
 end
 
