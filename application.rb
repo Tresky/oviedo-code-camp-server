@@ -96,7 +96,7 @@ post '/signup' do
       return { :message => 'failure_creatingcharge', :error => e }.to_json
     end
 
-    message = params[:parent_name] + ' has registered their child, ' + params[:child_name] + '. They are ' + params[:child_age] + 'years old.',
+    message = params[:parent_name] + ' has registered their child, ' + params[:child_name] + '. They are ' + params[:child_age] + 'years old.'
     res = Mailer.send 'hello@tylerpetresky.com', 'Tyler Petresky <hello@tylerpetresky.com>', '[Oviedo Code Camp] Registration', message
 
     {:message => 'success' }.to_json
