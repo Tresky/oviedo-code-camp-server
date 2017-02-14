@@ -1,4 +1,5 @@
 require './helpers'
+require './mailer'
 
 before do
   content_type :json
