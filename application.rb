@@ -14,7 +14,7 @@ post '/send_email' do
   puts 'Endpoint Hit'
   puts 'Verifying ReCaptcha'
   puts 'Body'
-  body = 'secret=' + ENV['RECAPTCHA_SECRETE_KEY'] + '&response=' + params['g-recaptcha-response']
+  body = 'secret=' + ENV['RECAPTCHA_SECRET_KEY'] + '&response=' + params['g-recaptcha-response']
   puts body
   response = HTTParty.post('https://www.google.com/recaptcha/api/siteverify',
     :body => body,
