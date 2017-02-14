@@ -11,6 +11,12 @@ set :public_dir, Proc.new { File.join(root, "_site") }
 post '/send_email' do
   puts 'Endpoint Hit'
   puts 'Verifying ReCaptcha'
+  puts 'Body'
+  body = {
+    :secret => '6LdZXBUUAAAAAIDdtkCWTDS2Ca7RgkcizUgUYq6U',
+    :response => params['g-recaptcha-response']
+  }.to_json
+  puts body
   response = HTTParty.post('https://www.google.com/recaptcha/api/siteverify',
     :body => {
       :secret => '6LdZXBUUAAAAAIDdtkCWTDS2Ca7RgkcizUgUYq6U',
