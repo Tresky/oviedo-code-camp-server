@@ -40,16 +40,17 @@ post '/send_email' do
   end
 end
 
-post '/signup' do
-  puts 'Signup Endpoint'
+post '/register' do
   @amount = 35000
 
   valid_params = Helpers.pull_params params, [
-    'parent_name',
-    'child_name',
+    'parent_first_name',
+    'parent_last_name',
+    'child_first_name',
+    'child_last_name',
     'child_age',
-    'email',
-    'tshirt_size',
+    't_shirt_size',
+    'stripeEmail',
     'stripeToken'
   ]
 
@@ -71,42 +72,56 @@ post '/signup' do
     end
 
     begin
-      puts 'Email: ' + params[:email]
-      puts 'Stripe: ' + params[:stripeToken]
       @customer = Stripe::Customer.create(
-        :email => params[:email].to_s,
+        :email => params[:stripeEmail].to_s,
         :source => params[:stripeToken].to_s
       )
-
-      puts 'Customer: ' + @customer.id
     rescue Stripe::StripeError => e
       return { :message => 'failure_creatingcustomer', :error => e }.to_json
     end
 
+    parent_name = params[:parent_first_name].to_s + ' ' + params[:parent_last_name].to_s
+    child_name = params[:child_first_name].to_s + ' ' + params[:child_last_name].to_s
     begin
+
+      description = parent_name + ' registered ' + child_name + ': ' + params[:child_age].to_s + 'yo'
       @charge = Stripe::Charge.create(
         :amount => @amount,
-        :description => params[:parent_name] + ' registered ' + params[:child_name] + ': ' + params[:child_age] + 'yo',
+        :description => description,
         :currency => 'usd',
         :customer => @customer.id
       )
-
-      puts 'Charge: ' + @charge.id
     rescue Stripe::StripeError => e
       return { :message => 'failure_creatingcharge', :error => e }.to_json
     end
 
-    message = params[:parent_name] + ' has registered their child, ' + params[:child_name] + '. They are ' + params[:child_age] + 'years old.'
-    res = Mailer.send 'hello@tylerpetresky.com', 'Tyler Petresky <hello@tylerpetresky.com>', '[Oviedo Code Camp] Registration', message
+    # Send a message to the customer about their registration
+    send_from = 'hello@tylerpetresky.com'
+    send_to = parent_name + ' <' + @customer.email + '>'
+    subject = 'Thank You for Registering'
 
-    {:message => 'success' }.to_json
+    # TODO: Need to transition this to an HTML template in the future.
+    # This has to look better!
+    message = 'Thank you for registering your child, ' + child_name + ', for the Oviedo Code Camp! We are very excited about meeting you. Please find below a receipt for your purchase....'
+    res = Mailer.send send_from, send_to, subject, message
+
+    # Send a message to us about a registration
+    send_from = 'hello@tylerpetresky.com'
+    send_to = 'Tyler Petresky <hello@tylerpetresky.com>'
+    subject = '[Oviedo Code Camp] Registration'
+
+    # Need to transition this to an HTML template in the future
+    message = params[:parent_first_name] + ' ' + params[:parent_last_name] + ' has registered their child, ' + params[:child_first_name] + ' ' + params[:child_last_name] + '. They are ' + params[:child_age] + 'years old.'
+    res = Mailer.send send_from, send_to, subject, message
+
+    { :message => 'success' }.to_json
   else
     { :message => 'failure_missingparams' }.to_json
   end
 end
 
 not_found do
-  File.read('_site/404.html')
+  File.read('templates/404.html')
 end
 
 get '/*' do
