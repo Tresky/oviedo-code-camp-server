@@ -25,7 +25,7 @@ get '/.well-known/acme-challenge/:token' do
     end
 
     data.each do |e|
-      if env['PATH_INFO'] == "/acme-challenge/#{e[:token]}"
+      if env['PATH_INFO'] == "/.well-known/acme-challenge/#{e[:token]}"
         status 200
         content_type 'text/plain'
         body "#{e[:key]}"
