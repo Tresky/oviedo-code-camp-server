@@ -122,8 +122,16 @@ post '/register' do
 
     begin
       @customer = Stripe::Customer.create(
-        :email => params[:stripeEmail].to_s,
-        :source => params[:stripeToken].to_s
+        email: params[:stripeEmail].to_s,
+        source: params[:stripeToken].to_s,
+        metadata: {
+          parent_first_name: params[:parent_first_name].to_s,
+          parent_last_name: params[:parent_last_name].to_s,
+          child_first_name: params[:child_first_name].to_s,
+          child_last_name: params[:child_last_name].to_s,
+          child_age: params[:child_age].to_s,
+          t_shirt_size: params[:t_shirt_size].to_s
+        }
       )
     rescue Stripe::StripeError => e
       return { :message => 'failure_creatingcustomer', :error => e }.to_json
