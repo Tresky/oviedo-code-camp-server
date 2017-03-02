@@ -31,6 +31,7 @@ GEM
       rack (~> 1.5)
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
+    sinatra-cross_origin (0.4.0)
     stripe (1.58.0)
       rest-client (>= 1.4, < 4.0)
     tilt (2.0.6)
@@ -49,10 +50,5 @@ DEPENDENCIES
   rack
   rack-recaptcha
   sinatra
+  sinatra-cross_origin (~> 0.4.0)
   stripe
-
-RUBY VERSION
-   ruby 2.1.5p273
-
-BUNDLED WITH
-   1.14.3
