@@ -1,21 +1,36 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    domain_name (0.5.20161129)
-      unf (>= 0.0.5, < 1.0.0)
+    activemodel (4.2.8)
+      activesupport (= 4.2.8)
+      builder (~> 3.1)
+    activerecord (4.2.8)
+      activemodel (= 4.2.8)
+      activesupport (= 4.2.8)
+      arel (~> 6.0)
+    activesupport (4.2.8)
+      i18n (~> 0.7)
+      minitest (~> 5.1)
+      thread_safe (~> 0.3, >= 0.3.4)
+      tzinfo (~> 1.1)
+    arel (6.0.4)
+    builder (3.2.3)
     dotenv (2.2.0)
-    http-cookie (1.0.3)
-      domain_name (~> 0.5)
+    faraday (0.11.0)
+      multipart-post (>= 1.2, < 3)
     httparty (0.14.0)
       multi_xml (>= 0.5.2)
+    i18n (0.8.1)
     json (2.0.3)
     mail (2.6.4)
       mime-types (>= 1.16, < 4)
     mime-types (3.1)
       mime-types-data (~> 3.2015)
     mime-types-data (3.2016.0521)
+    minitest (5.10.1)
     multi_xml (0.6.0)
-    netrc (0.11.0)
+    multipart-post (2.0.0)
+    pg (0.20.0)
     pony (1.11)
       mail (>= 2.0)
     rack (1.6.5)
@@ -23,32 +38,40 @@ GEM
       rack
     rack-recaptcha (0.6.6)
       json
-    rest-client (2.0.0)
-      http-cookie (>= 1.0.2, < 2.0)
-      mime-types (>= 1.16, < 4.0)
-      netrc (~> 0.8)
     sinatra (1.4.8)
       rack (~> 1.5)
       rack-protection (~> 1.4)
       tilt (>= 1.3, < 3)
+    sinatra-activerecord (2.0.12)
+      activerecord (>= 3.2)
+      sinatra (>= 1.0)
     sinatra-cross_origin (0.4.0)
-    stripe (1.58.0)
-      rest-client (>= 1.4, < 4.0)
+    stripe (2.0.1)
+      faraday (~> 0)
+    thread_safe (0.3.6)
     tilt (2.0.6)
-    unf (0.1.4)
-      unf_ext
-    unf_ext (0.0.7.2)
+    tzinfo (1.2.2)
+      thread_safe (~> 0.1)
 
 PLATFORMS
   ruby
 
 DEPENDENCIES
+  activerecord
   dotenv
   httparty
   json
+  pg
   pony
   rack
   rack-recaptcha
   sinatra
+  sinatra-activerecord
   sinatra-cross_origin (~> 0.4.0)
   stripe
+
+RUBY VERSION
+   ruby 2.1.5p273
+
+BUNDLED WITH
+   1.14.3

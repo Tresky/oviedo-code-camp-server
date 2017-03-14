@@ -6,6 +6,7 @@ require 'rack/recaptcha'
 require 'pony'
 require 'httparty'
 require 'stripe'
+require 'pg'
 
 
 # For Heroku logging

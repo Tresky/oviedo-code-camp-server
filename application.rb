@@ -1,6 +1,16 @@
+require 'sinatra'
+require 'sinatra/activerecord'
+require 'sinatra/cross_origin'
+
 require './helpers'
 require './mailer'
-require 'sinatra/cross_origin'
+require './environments'
+
+# Create a model for the Signup objects.
+# Only need one model, so just put in this file.
+class Signup < ActiveRecord::Base
+  # Maybe add validators if I get around to it.
+end
 
 before do
   content_type :json
@@ -97,8 +107,9 @@ post '/register' do
     'parent_last_name',
     'child_first_name',
     'child_last_name',
-    'child_age',
+    'child_completed_grade',
     't_shirt_size',
+    'camp_selection',
     'stripeEmail',
     'stripeToken'
   ]
@@ -129,7 +140,7 @@ post '/register' do
           parent_last_name: params[:parent_last_name].to_s,
           child_first_name: params[:child_first_name].to_s,
           child_last_name: params[:child_last_name].to_s,
-          child_age: params[:child_age].to_s,
+          child_completed_grade: params[:child_completed_grade].to_s,
           t_shirt_size: params[:t_shirt_size].to_s
         }
       )
@@ -141,7 +152,7 @@ post '/register' do
     child_name = params[:child_first_name].to_s + ' ' + params[:child_last_name].to_s
     begin
 
-      description = parent_name + ' registered ' + child_name + ': ' + params[:child_age].to_s + 'yo'
+      description = parent_name + ' registered ' + child_name + ': ' + params[:child_completed_grade].to_s + 'yo'
       @charge = Stripe::Charge.create(
         :amount => @amount,
         :description => description,
@@ -151,6 +162,18 @@ post '/register' do
     rescue Stripe::StripeError => e
       return { :message => 'failure_creatingcharge', :error => e }.to_json
     end
+
+    # Log data in the database
+    @record = Signup.new
+    @record.email = @customer.email
+    @record.parent_first_name = params[:parent_first_name]
+    @record.parent_last_name = params[:parent_last_name]
+    @record.child_first_name = params[:child_first_name]
+    @record.child_last_name = params[:child_last_name]
+    @record.child_completed_grade = params[:child_completed_grade]
+    @record.child_tshirt_size = params[:t_shirt_size]
+    @record.camp_selection = params[:camp_selection]
+    @record.save
 
     # Send a message to the customer about their registration
     send_from = 'hello@tylerpetresky.com'
@@ -168,7 +191,7 @@ post '/register' do
     subject = '[Oviedo Code Camp] Registration'
 
     # Need to transition this to an HTML template in the future
-    message = params[:parent_first_name] + ' ' + params[:parent_last_name] + ' has registered their child, ' + params[:child_first_name] + ' ' + params[:child_last_name] + '. They are ' + params[:child_age] + 'years old.'
+    message = params[:parent_first_name] + ' ' + params[:parent_last_name] + ' has registered their child, ' + params[:child_first_name] + ' ' + params[:child_last_name] + '. They have completed the ' + params[:child_completed_grade] + 'th grade.'
     res = Mailer.send send_from, send_to, subject, message
 
     { :message => 'success' }.to_json

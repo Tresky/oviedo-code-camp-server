@@ -9,4 +9,7 @@ gem 'sinatra'
 gem 'pony'
 gem 'json'
 gem 'stripe'
+gem 'pg'
+gem 'activerecord'
+gem 'sinatra-activerecord'
 gem "sinatra-cross_origin", "~> 0.4.0"
