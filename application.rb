@@ -62,7 +62,7 @@ options "*" do
 end
 
 get '/classes' do
-  @classes = Camp.all
+  @classes = Camp.all.order :id
   @classes.to_json
 end
 
