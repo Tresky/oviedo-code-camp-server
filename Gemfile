@@ -1,6 +1,7 @@
 source 'https://rubygems.org'
 ruby '2.1.5'
 
+gem 'awesome_print'
 gem 'dotenv'
 gem 'rack'
 gem 'rack-recaptcha'
