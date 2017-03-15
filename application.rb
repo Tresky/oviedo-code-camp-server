@@ -61,6 +61,11 @@ options "*" do
     200
 end
 
+get '/classes' do
+  @classes = Camp.all
+  @classes.to_json
+end
+
 get '/.well-known/acme-challenge/:token' do
     data = []
     if ENV['ACME_KEY'] && ENV['ACME_TOKEN']
