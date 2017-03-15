@@ -1,3 +1,5 @@
+require 'awesome_print'
+
 require 'sinatra'
 require 'sinatra/activerecord'
 require 'sinatra/cross_origin'
@@ -12,6 +14,25 @@ class Signup < ActiveRecord::Base
   # Maybe add validators if I get around to it.
 end
 
+class Camp < ActiveRecord::Base
+  # Maybe add validators if I get around to it.
+
+  def self.is_class_full?(name)
+    camp = Camp.where(:name => name).first
+    puts 'Amount'
+    puts camp.num_registered
+    camp.num_registered >= 12
+  end
+
+  def meet_age_requirement?(completed_grade)
+    if self.name.include?('elem')
+      completed_grade >= 4 && completed_grade < 6
+    elsif self.name.include?('middle')
+      completed_grade >= 6 && completed_grade < 9
+    end
+  end
+end
+
 before do
   content_type :json
   headers 'Access-Control-Allow-Origin' => '*',
@@ -21,7 +42,6 @@ end
 
 set :protection, false
 set :public_dir, Proc.new { File.join(root, "_site") }
-
 
 set :allow_origin, ['https://oviedocodecamp.com', 'localhost:9000']
 set :allow_methods, [:get, :post, :options]
@@ -115,6 +135,17 @@ post '/register' do
   ]
 
   if valid_params
+    # Verify that the class is not full already
+    if Camp.is_class_full?(params[:camp_selection])
+      return { :message => 'failure_classfull' }.to_json
+    end
+
+    # Verify that the camper meets the age requirement
+    @class = Camp.where(:name => params[:camp_selection]).first
+    if !@class.meet_age_requirement?(params[:child_completed_grade].to_i)
+      return { :message => 'failure_wrongage' }.to_json
+    end
+
     # Create a token to test with in development
     if ENV['RACK_ENV'].eql?('development')
       begin
@@ -151,7 +182,6 @@ post '/register' do
     parent_name = params[:parent_first_name].to_s + ' ' + params[:parent_last_name].to_s
     child_name = params[:child_first_name].to_s + ' ' + params[:child_last_name].to_s
     begin
-
       description = parent_name + ' registered ' + child_name + ': ' + params[:child_completed_grade].to_s + 'yo'
       @charge = Stripe::Charge.create(
         :amount => @amount,
@@ -173,7 +203,13 @@ post '/register' do
     @record.child_completed_grade = params[:child_completed_grade]
     @record.child_tshirt_size = params[:t_shirt_size]
     @record.camp_selection = params[:camp_selection]
-    @record.save
+    @record.stripe_id = @customer.id
+    @record.save!
+
+    # Update class info
+    @class.num_registered = @class.num_registered + 1
+    @class.registered_signup_ids << @record.id
+    @class.save!
 
     # Send a message to the customer about their registration
     send_from = 'hello@tylerpetresky.com'
