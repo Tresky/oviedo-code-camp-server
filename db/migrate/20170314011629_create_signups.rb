@@ -8,7 +8,7 @@ class CreateSignups < ActiveRecord::Migration
      t.string :child_last_name
      t.integer :child_completed_grade
      t.string :child_tshirt_size
-     t.integer :camp_selection
+     t.string :camp_selection
      t.timestamps
    end
   end
