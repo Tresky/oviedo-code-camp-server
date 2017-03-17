@@ -243,18 +243,18 @@ post '/register' do
       end
     end
 
-    message = 'Thank you for registering ' + child_name + ' for the Oviedo Code Camp! We are very excited about meeting you and your child. Please find below the information for your order:\n\n\n'
-    message += 'Confirmation Number: ' + @charge.id + '\n'
-    message += '-----------------------------------\n'
-    message += 'Child Name: ' + child_name + '\n'
-    message += 'Camp Registered: ' + camp + '\n'
-    message += 'Camp Dates: ' + date + '\n'
-    message += 'T-Shirt Size: ' + @record.child_tshirt_size + '\n\n'
-    message += 'Receipt\n'
-    message += '-----------------------------------\n'
-    message += 'Date Paid: ' + DateTime.strptime(@charge.created.to_s,'%s').strftime('%b %e, %Y') + '\n'
-    message += 'Amount Paid: $350.00\n\n'
-    message += 'If you have any questions regarding your order, please feel free to contact us at contact@oviedocodecamp.com'
+    message = "Thank you for registering " + child_name + " for the Oviedo Code Camp! We are very excited about meeting you and your child. Please find below the information for your order:<br /><br /><br />"
+    message += "Confirmation Number: " + @charge.id + "<br />"
+    message += "-----------------------------------<br />"
+    message += "Child Name: " + child_name + "<br />"
+    message += "Camp Registered: " + camp + "<br />"
+    message += "Camp Dates: " + date + "<br />"
+    message += "T-Shirt Size: " + @record.child_tshirt_size + "<br /><br />"
+    message += "Receipt<br />"
+    message += "-----------------------------------<br />"
+    message += "Date Paid: " + DateTime.strptime(@charge.created.to_s,'%s').strftime('%b %e, %Y') + "<br />"
+    message += "Amount Paid: $350.00<br /><br />"
+    message += "If you have any questions regarding your order, please feel free to contact us at contact@oviedocodecamp.com"
 
     res = Mailer.send send_from, send_to, subject, message
 
