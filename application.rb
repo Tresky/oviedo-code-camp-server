@@ -139,7 +139,7 @@ post '/register' do
     'stripeToken'
   ]
 
-  if (!params.kas_key?('terms') || !(params[:terms].eql?('true') || params[:terms].eql?(true)))
+  if (!params.has_key?('terms') || !(params[:terms].eql?('true') || params[:terms].eql?(true)))
     return { :message => 'failure_mustagree' }.to_json
   end
 
