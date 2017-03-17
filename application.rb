@@ -212,6 +212,7 @@ post '/register' do
     @record.child_completed_grade = params[:child_completed_grade]
     @record.child_tshirt_size = params[:t_shirt_size]
     @record.camp_selection = params[:camp_selection]
+    @record.terms_agreed = true
     @record.stripe_id = @customer.id
     @record.save!
 
