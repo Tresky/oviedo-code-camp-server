@@ -4,7 +4,7 @@ class Mailer
       :from => from.to_s,
       :to => to.to_s,
       :subject => subject.to_s,
-      :body => message.to_s,
+      :html_body => message.to_s,
       :via => :smtp,
       :via_options => {
         :address              => 'smtp.sendgrid.net',
