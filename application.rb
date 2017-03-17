@@ -260,11 +260,24 @@ post '/register' do
 
     # Send a message to us about a registration
     send_from = 'contact@oviedocodecamp.com'
-    send_to = 'Code Camp Registration <contact@oviedocodecamp.com>'
+    send_to = 'Code Camp <contact@oviedocodecamp.com>'
     subject = 'Registration Recieved'
 
     # Need to transition this to an HTML template in the future
-    message = params[:parent_first_name] + ' ' + params[:parent_last_name] + ' has registered their child, ' + params[:child_first_name] + ' ' + params[:child_last_name] + '. They have completed the ' + params[:child_completed_grade] + 'th grade.'
+    message = "There has been a new registration. Below is the information:<br /><br /><br />"
+    message += "Thank you for registering " + child_name + " for the Oviedo Code Camp! We are very excited about meeting you and your child. Please find below the information for your order:<br /><br /><br />"
+    message += "Confirmation Number: " + @charge.id + "<br />"
+    message += "-----------------------------------<br />"
+    message += "Child Name: " + child_name + "<br />"
+    message += "Camp Registered: " + camp + "<br />"
+    message += "Camp Dates: " + date + "<br />"
+    message += "T-Shirt Size: " + @record.child_tshirt_size + "<br /><br />"
+    message += "Receipt<br />"
+    message += "-----------------------------------<br />"
+    message += "Date Paid: " + DateTime.strptime(@charge.created.to_s,'%s').strftime('%b %e, %Y') + "<br />"
+    message += "Amount Paid: $350.00<br /><br />"
+    message += "If you have any questions regarding your order, please feel free to contact us at contact@oviedocodecamp.com"
+    # message = params[:parent_first_name] + ' ' + params[:parent_last_name] + ' has registered their child, ' + params[:child_first_name] + ' ' + params[:child_last_name] + '. They have completed the ' + params[:child_completed_grade] + 'th grade.'
     res = Mailer.send send_from, send_to, subject, message
 
     { :message => 'success' }.to_json
