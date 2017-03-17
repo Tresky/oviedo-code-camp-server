@@ -139,6 +139,10 @@ post '/register' do
     'stripeToken'
   ]
 
+  if (!params.kas_key?('terms') || !(params[:terms].eql?('true') || params[:terms].eql?(true))
+    return { :message => 'failure_mustagree' }.to_json
+  end
+
   if valid_params
     # Verify that the class is not full already
     if Camp.is_class_full?(params[:camp_selection])
