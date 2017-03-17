@@ -258,7 +258,7 @@ post '/register' do
     message += 'T-Shirt Size: ' + @record.child_tshirt_size + '\n\n'
     message += 'Receipt\n'
     message += '-----------------------------------\n'
-    message += 'Date Paid: ' + DateTime.strptime(@charge.created.to_s,'%s').strftime('%b %e, %Y'),
+    message += 'Date Paid: ' + DateTime.strptime(@charge.created.to_s,'%s').strftime('%b %e, %Y') + '\n'
     message += 'Amount Paid: $350.00\n\n'
     message += 'If you have any questions regarding your order, please feel free to contact us at contact@oviedocodecamp.com'
 
