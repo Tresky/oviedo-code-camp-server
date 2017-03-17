@@ -242,13 +242,7 @@ post '/register' do
         date = 'July 10-14'
       end
     end
-    if ['foundations-elem-1', 'foundations-elem-2'].contains?(@record.camp_selection)
-      camp = 'Foundations for Elementary'
-    elsif ['foundations-middle-1']
-    end
 
-    # TODO: Need to transition this to an HTML template in the future.
-    # This has to look better!
     message = 'Thank you for registering ' + child_name + ' for the Oviedo Code Camp! We are very excited about meeting you and your child. Please find below the information for your order:\n\n\n'
     message += 'Confirmation Number: ' + @charge.id + '\n'
     message += '-----------------------------------\n'
@@ -262,20 +256,6 @@ post '/register' do
     message += 'Amount Paid: $350.00\n\n'
     message += 'If you have any questions regarding your order, please feel free to contact us at contact@oviedocodecamp.com'
 
-# Confirmation Number: ' + asdasd + '
-# -----------------------------------
-# Child Name:
-# Camp Registered: Middle
-# Camp Dates:
-# T-Shirt Size:
-#
-# Receipt
-# -----------------------------------
-# Date Paid: 12/12/12
-# Amount Paid: $350.00
-#
-# If you have any questions regarding your order, please feel free to contact us at contact@oviedocodecamp.com
-#     message = 'Thank you for registering ' + child_name + ' for the Oviedo Code Camp! We are very excited about meeting you and your child. Please find below the information for your order:\n\n\n'
     res = Mailer.send send_from, send_to, subject, message
 
     # Send a message to us about a registration
