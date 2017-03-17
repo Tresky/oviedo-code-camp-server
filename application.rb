@@ -221,19 +221,67 @@ post '/register' do
     @class.save!
 
     # Send a message to the customer about their registration
-    send_from = 'hello@tylerpetresky.com'
+    send_from = 'contact@oviedocodecamp.com'
     send_to = parent_name + ' <' + @customer.email + '>'
-    subject = 'Thank You for Registering'
+    subject = 'Thank You for Registering for Oviedo Code Camp'
+
+    camp = ''
+    date = ''
+    if @record.camp_selection.include?('elem')
+      camp = 'Foundations for Elementary'
+      if @record.camp_selection.include?('1')
+        date = 'June 12-16'
+      elsif @record.camp_selection.include?('2')
+        date = 'June 19-23'
+      end
+    elsif @record.camp_selection.include?('middle')
+      camp = 'Foundations for Middle'
+      if @record.camp_selection.include?('1')
+        date = 'June 26-30'
+      elsif @record.camp_selection.include?('2')
+        date = 'July 10-14'
+      end
+    end
+    if ['foundations-elem-1', 'foundations-elem-2'].contains?(@record.camp_selection)
+      camp = 'Foundations for Elementary'
+    elsif ['foundations-middle-1']
+    end
 
     # TODO: Need to transition this to an HTML template in the future.
     # This has to look better!
-    message = 'Thank you for registering your child, ' + child_name + ', for the Oviedo Code Camp! We are very excited about meeting you. Please find below a receipt for your purchase....'
+    message = 'Thank you for registering ' + child_name + ' for the Oviedo Code Camp! We are very excited about meeting you and your child. Please find below the information for your order:\n\n\n'
+    message += 'Confirmation Number: ' + @charge.id + '\n'
+    message += '-----------------------------------\n'
+    message += 'Child Name: ' + child_name + '\n'
+    message += 'Camp Registered: ' + camp + '\n'
+    message += 'Camp Dates: ' + date + '\n'
+    message += 'T-Shirt Size: ' + @record.child_tshirt_size + '\n\n'
+    message += 'Receipt\n'
+    message += '-----------------------------------\n'
+    message += 'Date Paid: ' + DateTime.strptime(@charge.created.to_s,'%s').strftime('%b %e, %Y'),
+    message += 'Amount Paid: $350.00\n\n'
+    message += 'If you have any questions regarding your order, please feel free to contact us at contact@oviedocodecamp.com'
+
+# Confirmation Number: ' + asdasd + '
+# -----------------------------------
+# Child Name:
+# Camp Registered: Middle
+# Camp Dates:
+# T-Shirt Size:
+#
+# Receipt
+# -----------------------------------
+# Date Paid: 12/12/12
+# Amount Paid: $350.00
+#
+# If you have any questions regarding your order, please feel free to contact us at contact@oviedocodecamp.com
+#     message = 'Thank you for registering ' + child_name + ' for the Oviedo Code Camp! We are very excited about meeting you and your child. Please find below the information for your order:\n\n\n'
     res = Mailer.send send_from, send_to, subject, message
 
     # Send a message to us about a registration
-    send_from = 'hello@tylerpetresky.com'
-    send_to = 'Tyler Petresky <hello@tylerpetresky.com>'
-    subject = '[Oviedo Code Camp] Registration'
+    send_from = 'contact@oviedocodecamp.com'
+    send_to = 'Code Camp Registration <contact@oviedocodecamp.com>'
+    subject = 'Registration Recieved'
 
     # Need to transition this to an HTML template in the future
     message = params[:parent_first_name] + ' ' + params[:parent_last_name] + ' has registered their child, ' + params[:child_first_name] + ' ' + params[:child_last_name] + '. They have completed the ' + params[:child_completed_grade] + 'th grade.'
