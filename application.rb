@@ -255,7 +255,8 @@ post '/register' do
     message += "-----------------------------------<br />"
     message += "Date Paid: " + DateTime.strptime(@charge.created.to_s,'%s').strftime('%b %e, %Y') + "<br />"
     message += "Amount Paid: $350.00<br /><br />"
-    message += "If you have any questions regarding your order, please feel free to contact us at contact@oviedocodecamp.com"
+    message += "If you have any questions regarding your order, please feel free to contact us at contact@oviedocodecamp.com.<br /><br />"
+    message += "<b>In the Future</b><br />You can expect an email from us about a week before your class with the last few details. Oviedo Code Camp is providing all of the required technology for your course (laptop, robotics, electronics). The camp is taking place at the Shift Agent Labs office, located at 120 Alexandria Blvd Suite 18, Oviedo FL 32765. If you have any question please reply to this email or give us a call at (407) 906-2950."
 
     res = Mailer.send send_from, send_to, subject, message
 
@@ -277,8 +278,9 @@ post '/register' do
     message += "-----------------------------------<br />"
     message += "Date Paid: " + DateTime.strptime(@charge.created.to_s,'%s').strftime('%b %e, %Y') + "<br />"
     message += "Amount Paid: $350.00<br /><br />"
-    message += "If you have any questions regarding your order, please feel free to contact us at contact@oviedocodecamp.com"
-    # message = params[:parent_first_name] + ' ' + params[:parent_last_name] + ' has registered their child, ' + params[:child_first_name] + ' ' + params[:child_last_name] + '. They have completed the ' + params[:child_completed_grade] + 'th grade.'
+    message += "If you have any questions regarding your order, please feel free to contact us at contact@oviedocodecamp.com.<br /><br />"
+    message += "<b>In the Future</b><br />You can expect an email from us about a week before your class with the last few details. Oviedo Code Camp is providing all of the required technology for your course (laptop, robotics, electronics). The camp is taking place at the Shift Agent Labs office, located at 120 Alexandria Blvd Suite 18, Oviedo FL 32765. If you have any question please reply to this email or give us a call at (407) 906-2950."
+
     res = Mailer.send send_from, send_to, subject, message
 
     { :message => 'success' }.to_json
