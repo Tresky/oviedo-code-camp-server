@@ -262,7 +262,7 @@ post '/register' do
 
     # Send a message to us about a registration
     send_from = 'contact@oviedocodecamp.com'
-    send_to = 'Code Camp <hello@tylerpetresky.com>'
+    send_to = 'Code Camp <contact@oviedocodecamp.com>'
     subject = 'Registration Recieved'
 
     # Need to transition this to an HTML template in the future
